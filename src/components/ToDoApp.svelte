@@ -1,11 +1,24 @@
 <script>
+    import { onMount } from "svelte"
     import ToDoControl from "./ToDoControl.svelte";
     import ToDoItem from "./ToDoItem.svelte";
 
     let fieldEl;
 
-    let currentID = 1
     let itemList = []
+    let currentID = 0
+
+    onMount(() => {
+        if (localStorage.key('itemList')) {
+            itemList = JSON.parse(localStorage.getItem('itemList'))
+            itemList.forEach((i) => {
+                if (currentID < i.id) {
+                    currentID = i.id
+                }
+            })
+            currentID++
+        }
+    })
 
     function onChange(event) {
         for (let i = 0; i < itemList.length; ++i) {
@@ -13,6 +26,7 @@
                 itemList[i].isDone = event.detail.status
             }
         }
+        localStorage.setItem('itemList', JSON.stringify(itemList))
     }
 
     function onRemove(event) {
@@ -21,6 +35,7 @@
                 itemList.splice(i, 1)
             }
         }
+        localStorage.setItem('itemList', JSON.stringify(itemList))
     }
 
     function onAdd(event) {
@@ -31,6 +46,7 @@
         }
         itemList.push(newItem)
         itemList = itemList
+        localStorage.setItem('itemList', JSON.stringify(itemList))
     }
 </script>
 
