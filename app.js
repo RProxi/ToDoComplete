@@ -12,8 +12,8 @@ app.get('/todo', async (req, res) => {
 })
 
 app.post('/todo', async (req, res) => {
-    console.log(req)
     const result = await createToDo(req.body)
+    res.send(result.rows)
 })
 
 app.delete('/todo/:id', async (req, res) => {
