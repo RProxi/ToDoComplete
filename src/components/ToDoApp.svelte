@@ -1,62 +1,37 @@
 <script>
-    import { onMount } from "svelte"
     import ToDoControl from "./ToDoControl.svelte";
-    import ToDoItem from "./ToDoItem.svelte";
+    import ToDoItem from "./ToDoItem.svelte";   
+    import { toDoApiModule } from '../lib/api.ts';
 
-    let fieldEl;
+    let items = loadData();
 
-    let itemList = []
-    let currentID = 0
-
-    onMount(() => {
-        if (localStorage.key('itemList')) {
-            itemList = JSON.parse(localStorage.getItem('itemList'))
-            itemList.forEach((i) => {
-                if (currentID < i.id) {
-                    currentID = i.id
-                }
-            })
-            currentID++
-        }
-    })
-
-    function onChange(event) {
-        for (let i = 0; i < itemList.length; ++i) {
-            if (itemList[i].id == event.detail.id) {
-                itemList[i].isDone = event.detail.status
-            }
-        }
-        localStorage.setItem('itemList', JSON.stringify(itemList))
+    function loadData() {
+        return toDoApiModule.getToDos();
     }
-
-    function onRemove(event) {
-        for (let i = 0; i < itemList.length; ++i) {
-            if(itemList[i].id == event.detail.id) {
-                itemList.splice(i, 1)
-            }
-        }
-        localStorage.setItem('itemList', JSON.stringify(itemList))
-    }
-
-    function onAdd(event) {
-        const newItem = {
-            id: currentID++,
+    async function createToDo(event) {
+        await toDoApiModule.createToDo({
             text: event.detail.inputValue,
-            isDone: false
-        }
-        itemList.push(newItem)
-        itemList = itemList
-        localStorage.setItem('itemList', JSON.stringify(itemList))
+            is_done: false
+        });
+        items = loadData();
+    }
+    async function removeToDo(event) {
+        await toDoApiModule.removeToDo(event.detail.id);
+        items = loadData();
     }
 </script>
 
 <div class="todo-app">
-    <ToDoControl on:addel={onAdd}/>
-    <div class="todo-app__field" bind:this={fieldEl}>
-        {#each itemList as item}
-            <ToDoItem id={item.id} text={item.text} isDone={item.isDone} on:change={onChange} on:remove={onRemove}/>
-        {/each}
-    </div>
+    {#await items}
+        Loading...
+    {:then value}
+        <ToDoControl on:addel={createToDo}/>
+        <div class = "todo-app__field">
+            {#each value as item}
+                <ToDoItem id={item.id} text={item.text} bind:is_done={item.is_done} on:remove={removeToDo}/>
+            {/each}
+        </div>
+    {/await}
 </div>
 
 <style>

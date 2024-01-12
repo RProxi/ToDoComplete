@@ -1,11 +1,12 @@
 <script>
     import { createEventDispatcher } from 'svelte';
-
-    let inputValue;
     const dispatch = createEventDispatcher();
+
+    let inputValue = ''
 
     function onBtnClicked() {
         dispatch("addel", {inputValue})
+        inputValue = ''
     }
 </script>
 

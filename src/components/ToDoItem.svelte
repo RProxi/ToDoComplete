@@ -1,6 +1,6 @@
 <script>
     import { createEventDispatcher } from 'svelte';
-    export let isDone
+    export let is_done
     export let text
     export let id
 
@@ -9,7 +9,7 @@
 	const dispatch = createEventDispatcher();
 
     function onCheckboxChanged() {
-        dispatch('change', {status: !isDone, id})
+        dispatch('change', {status: !is_done, id})
     }
 
     function onRmBtnPressed() {
@@ -18,8 +18,8 @@
     }
 </script>
 
-<div class="list-item" class:list-item__done={isDone} bind:this={nodeRef}>
-    <input type="checkbox" checked={isDone} class="list-item__checkbox" on:change={onCheckboxChanged}/>
+<div class="list-item" class:list-item__done={is_done} bind:this={nodeRef}>
+    <input type="checkbox" checked={is_done} class="list-item__checkbox" on:change={onCheckboxChanged}/>
     <span class="list-item__text">{text}</span>
     <button class="list-item__btn" on:click={onRmBtnPressed}><img class="list-item__img" src="src\img\trash.png" alt="Delete"></button>
 </div>
