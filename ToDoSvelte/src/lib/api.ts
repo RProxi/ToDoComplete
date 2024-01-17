@@ -2,7 +2,7 @@ import axios from "axios";
 const baseUrl = "http://localhost:3000"
 interface IToDo {
     id?: number,
-    text: string,
+    text?: string,
     is_done?: Boolean
 }
 async function getToDos(): Promise<Array<IToDo>> {
@@ -18,8 +18,13 @@ async function removeToDo(id: number) {
     return await axios.delete(`${baseUrl}/todo/${id}`)
 }
 
+async function updateToDo(dto:IToDo) {
+    return await axios.put(`${baseUrl}/todo`, dto)
+}
+
 export const toDoApiModule = {
     getToDos,
     createToDo,
-    removeToDo
+    removeToDo,
+    updateToDo
 }

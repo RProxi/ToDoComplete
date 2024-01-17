@@ -1,6 +1,6 @@
 import express from 'express'
 import cors from 'cors'
-import { createToDo, getAllToDos, deleteToDo } from './db.js'
+import { createToDo, getAllToDos, deleteToDo, updateToDo } from './db.js'
 const app = express()
 const port = 3000
 app.use(express.json())
@@ -13,6 +13,11 @@ app.get('/todo', async (req, res) => {
 
 app.post('/todo', async (req, res) => {
     const result = await createToDo(req.body)
+    res.send(result.rows)
+})
+
+app.put('/todo', async (req, res) => {
+    const result = await updateToDo(req.body)
     res.send(result.rows)
 })
 

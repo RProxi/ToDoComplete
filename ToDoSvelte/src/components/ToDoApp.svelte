@@ -19,6 +19,13 @@
         await toDoApiModule.removeToDo(event.detail.id);
         items = loadData();
     }
+    async function updateToDo(event) {
+        await toDoApiModule.updateToDo({
+            id: event.detail.id,
+            is_done: event.detail.status
+        });
+        items = loadData();
+    }
 </script>
 
 <div class="todo-app">
@@ -28,7 +35,7 @@
         <ToDoControl on:addel={createToDo}/>
         <div class = "todo-app__field">
             {#each value as item}
-                <ToDoItem id={item.id} text={item.text} bind:is_done={item.is_done} on:remove={removeToDo}/>
+                <ToDoItem id={item.id} text={item.text} bind:is_done={item.is_done} on:remove={removeToDo} on:change={updateToDo}/>
             {/each}
         </div>
     {/await}
